@@ -9,10 +9,8 @@ from datetime import timezone
 
 client = discord.Client()
 
-#self-bot
-#supportbot_id = "<@409894056534212619>"
-#proper-bot
 supportbot_id = "<@415988497233477637>"
+supportbot_user = "SupportBot#7329"
 
 smartrewards_id = "<@406978568145338381>"
 tipbot_id = "<@384266669016743936>"
@@ -28,7 +26,7 @@ def log_interaction(message):
 @client.event
 async def on_message(message):
     # Ignore our own messages
-    if "SupportBot#7329" in str(message.author):
+    if supportbot_user in str(message.author):
         pass
 
 
