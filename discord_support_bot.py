@@ -12,7 +12,7 @@ client = discord.Client()
 #self-bot
 #supportbot_id = "<@409894056534212619>"
 #proper-bot
-supportbot_id = "<@415988497233477637"
+supportbot_id = "<@415988497233477637>"
 
 smartrewards_id = "<@406978568145338381>"
 tipbot_id = "<@384266669016743936>"
