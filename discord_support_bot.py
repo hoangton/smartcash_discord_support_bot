@@ -95,6 +95,7 @@ You can estimate your SmartNode income by using https://smartcash.bitcoiner.me/s
                 except:
                     await client.send_message(message.channel, "Sorry " + message.author.mention + " I had a problem getting that information.")
                     success = False
+                    break
 
             if success:
                 if valid == True:
@@ -127,10 +128,13 @@ See https://smartcash.cc/what-are-smartrewards/#toggle-id-6 https://smartcash.bi
         elif "upgrade" in message.content.lower() or "update" in message.content.lower():
             log_interaction(message)
             await client.send_message(message.channel, '''Updating your SmartNode to the latest release is a multi-step process: 
-1) You must first upgrade your desktop or "hot" wallet to the latest version
-2) Next, update the wallet on your SmartNode
-3) After upgrading you SmartNode you will need to issue a new start from your desktop wallet by highlighting your node and clicking `start-alias`
-**Note: When you start `smartcashd` on your updated node its status will be `Not capable smartnode: Invalid protocol version` until you complete step 3.**''')
+1) Stop smartcashd on your SmartNode, delete peers.dat, update the wallet, and then start smartcashd
+2) Upgrade your desktop or "hot" wallet to the latest version
+3) After upgrading you SmartNode you will need to issue a new start from your desktop wallet by highlighting your node and clicking `start-alias` (Warning: This will reset your SmartNode's position in the payment queue)
+
+**Note: When you start `smartcashd` on your updated node its status will be `Not capable smartnode: Invalid protocol version` until you complete step 3.**
+
+For more information see http://smartnodes.cc/#Mandatory_Upgrade_v1.1.1''')
 
         
         # INSTALL
@@ -237,10 +241,18 @@ def get_address(address):
 
 
 def walk_backwards(address,balance,transactions):
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
     month = now.month
-    month = 12 if (month -1 == 0) else month -1
-    snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc).timestamp())
+    day = now.day
+    if day <= 25 and now.hour <= 7:
+        month = 12 if (month -1 == 0) else month -1
+        snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
+        print(snapshot,flush=True)
+        snapshot = snapshot.timestamp()
+    else:
+        snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
+        print(snapshot,flush=True)
+        snapshot = snapshot.timestamp()
     balance = float(balance)
     balance_at_snap = balance
     for transaction in transactions:
@@ -274,10 +286,18 @@ def get_outgoing_timestamps(transactions):
 
 
 def check_validity(balance,outgoing_times):
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
     month = now.month
-    month = 12 if (month -1 == 0) else month -1
-    snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc).timestamp())
+    day = now.day
+    if day <= 25 and now.hour <= 7:
+        month = 12 if (month -1 == 0) else month -1
+        snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
+        print(snapshot,flush=True)
+        snapshot = snapshot.timestamp()
+    else:
+        snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
+        print(snapshot,flush=True)
+        snapshot = snapshot.timestamp()
     if int(balance) < 1000:
         valid = False
         return valid,"it holds less than 1,000 SMART"
