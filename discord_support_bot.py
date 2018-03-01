@@ -76,6 +76,7 @@ You can estimate your SmartNode income by using https://smartcash.bitcoiner.me/s
             reason = ""
             await client.send_message(message.channel, "Give me a minute to look that up " + message.author.mention)
             address = message.content.split(" ")[-1]
+
             while True:
                 try:
                     balance,transactions = get_address(address)
@@ -85,21 +86,27 @@ You can estimate your SmartNode income by using https://smartcash.bitcoiner.me/s
                         break
                     if walk_backwards(address,balance,transactions) > 1000:
                         outgoing_times = get_outgoing_timestamps(transactions)
-                        valid,reason = check_validity(balance,outgoing_times)
+                        valid,reason,payout = check_validity(balance,outgoing_times)
                         break
                     else:
                         valid = False
                         reason = "it had a balance below 1000 when the snapshot was taken."
                         break
 
+                except KeyError:
+                    await client.send_message(message.channel, "Sorry " + message.author.mention + " I couldn't find that address on the explorer.")
+                    success = False
+                    break
+
                 except:
                     await client.send_message(message.channel, "Sorry " + message.author.mention + " I had a problem getting that information.")
                     success = False
                     break
 
+
             if success:
                 if valid == True:
-                    await client.send_message(message.channel, message.author.mention + ", the address " + address + " is **eligible** for SmartRewards this month.. (results of this beta feature may be unexpected)")
+                    await client.send_message(message.channel, message.author.mention + ", the address " + address + " is **eligible** for SmartRewards this month which will be paid on " + payout + ".. (results of this beta feature may be unexpected)")
                 else:
                     await client.send_message(message.channel, message.author.mention + ", the address " + address + " is **ineligible** for SmartRewards this month because " + reason + ". (results of this beta feature may be unexpected)")
 
@@ -264,6 +271,7 @@ def walk_backwards(address,balance,transactions):
             for tx in json_response["vout"]:
                 if address in tx["scriptPubKey"]["addresses"]:
                     balance_at_snap -= float(tx["value"])
+            break
     return balance_at_snap
 
 
@@ -289,6 +297,8 @@ def check_validity(balance,outgoing_times):
     now = datetime.datetime.utcnow()
     month = now.month
     day = now.day
+    payout_month = 1 if (month + 1 == 13) else month + 1
+    payout = str(payout_month) + "/25 at 7:00 UTC"
     if day <= 25 and now.hour <= 7:
         month = 12 if (month -1 == 0) else month -1
         snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
@@ -296,7 +306,6 @@ def check_validity(balance,outgoing_times):
         snapshot = snapshot.timestamp()
     else:
         snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
-        print(snapshot,flush=True)
         snapshot = snapshot.timestamp()
     if int(balance) < 1000:
         valid = False
@@ -308,12 +317,12 @@ def check_validity(balance,outgoing_times):
         if int(outgoing_time) > snapshot:
             valid = False
             reason = "there was an outgoing transaction after the snapshot"
-            return valid,reason
+            break
         else:
             valid = True
             reason = None
 
-    return valid,reason
+    return valid,reason,payout
 
 client.run('KEY')
 #client.run('KEY', bot=False)
