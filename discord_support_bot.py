@@ -297,7 +297,10 @@ def check_validity(balance,outgoing_times):
     now = datetime.datetime.utcnow()
     month = now.month
     day = now.day
-    payout_month = 1 if (month + 1 == 13) else month + 1
+    if day < 25:
+        payout_month = month
+    else:
+        payout_month = 1 if (month + 1 == 13) else month + 1
     payout = str(payout_month) + "/25 at 7:00 UTC"
     if day <= 25 and now.hour <= 7:
         month = 12 if (month -1 == 0) else month -1
