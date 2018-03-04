@@ -256,7 +256,7 @@ def walk_backwards(address,balance,transactions):
         snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
         print(snapshot,flush=True)
         snapshot = snapshot.timestamp()
-    elif day == 25 nd now.hour <= 7:
+    elif day == 25 and now.hour <= 7:
         month = 12 if (month -1 == 0) else month -1
         snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
         print(snapshot,flush=True)
