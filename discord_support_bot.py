@@ -332,6 +332,6 @@ def check_validity(balance,outgoing_times):
 
     return valid,reason,payout
 
-client.run('KEY')
-#client.run('KEY', bot=False)
 
+#Start main loop
+client.run('KEY')
