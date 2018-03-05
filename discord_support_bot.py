@@ -7,20 +7,16 @@ import requests
 import json
 from datetime import timezone
 
-client = discord.Client()
 
 supportbot_id = "<@415988497233477637>"
 supportbot_user = "SupportBot#7329"
-
 smartrewards_id = "<@406978568145338381>"
 tipbot_id = "<@384266669016743936>"
 andrew_id = "<@383504587489017856>"
-
 main_tipping_channel = "389238821788712961"
 
 
-def log_interaction(message):
-    print("User: " + str(message.author) + " ({0.author.mention})\nChannel: ".format(message) + str(message.channel) + "\nTrigger: " + str(message.content) + "\n",flush=True)
+client = discord.Client()
 
 
 @client.event
@@ -331,6 +327,10 @@ def check_validity(balance,outgoing_times):
             reason = None
 
     return valid,reason,payout
+
+
+def log_interaction(message):
+    print("User: " + str(message.author) + " ({0.author.mention})\nChannel: ".format(message) + str(message.channel) + "\nTrigger: " + str(message.content) + "\n",flush=True)
 
 
 #Start main loop
