@@ -303,7 +303,7 @@ def check_validity(balance,outgoing_times):
     else:
         payout_month = 1 if (month + 1 == 13) else month + 1
     payout = str(payout_month) + "/25 at 7:00 UTC"
-    if day <= 25 and now.hour <= 7 and now.minutes <= 0:
+    if day <= 25 and now.hour <= 7 and now.minute <= 0:
         month = 12 if (month -1 == 0) else month -1
         snapshot = (datetime.datetime(2018,month,25,7,0,tzinfo=timezone.utc))
         print(snapshot,flush=True)
